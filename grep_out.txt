@@ -1,0 +1,96 @@
+69-  };
+70-
+71-  useEffect(() => {
+72-    let filtered = results;
+73-    if (showOnlyPassed) {
+74:      filtered = filtered.filter(r => strategy === 'alpha' ? r.passed : (strategy === 'sangam' ? r.sangamPassed : r.reversalPassed));
+75-    }
+76-    if (searchQuery) {
+77-      const q = searchQuery.toLowerCase();
+78-      filtered = filtered.filter(r => r.name.toLowerCase().includes(q) || r.symbol.toLowerCase().includes(q));
+79-    }
+--
+83-  const exportToCSV = () => {
+84-    if (filteredResults.length === 0) return;
+85-    
+86-    // Define headers
+87-    let headers = ['Symbol', 'Name', 'Close Price'];
+88:    if (strategy === 'alpha') {
+89-      headers.push('Signal (Alpha)', 'EMA 20', 'EMA 50', 'EMA 200', 'RS Value', 'RS EMA');
+90:    } else if (strategy === 'sangam') {
+91-      headers.push('Signal (Sangam)', 'EMA 20', 'EMA 30', 'EMA 40');
+92-    } else {
+93-      headers.push('Signal (Reversal)', 'EMA 20', 'EMA 50', 'EMA 200', 'RS Value');
+94-    }
+95-    
+96-    // Map data
+97-    const rows = filteredResults.map(r => {
+98:      const isPassed = strategy === 'alpha' ? r.passed : (strategy === 'sangam' ? r.sangamPassed : r.reversalPassed);
+99:      if (strategy === 'alpha') {
+100-        return [
+101-          r.symbol,
+102-          r.name,
+103-          r.weeklyClose.toFixed(2),
+104-          isPassed ? 'STRONG BUY' : (r.ema20 > r.ema50 && r.ema20 > r.ema100 && r.ema20 > r.ema200 ? 'WATCHING' : 'REJECTED'),
+--
+106-          r.ema50.toFixed(2),
+107-          r.ema200.toFixed(2),
+108-          r.rsValue.toFixed(4),
+109-          r.rsEma.toFixed(4)
+110-        ];
+111:      } else if (strategy === 'sangam') {
+112-        return [
+113-          r.symbol,
+114-          r.name,
+115-          r.weeklyClose.toFixed(2),
+116-          isPassed ? 'STRONG BUY' : 'WATCHING/REJECTED',
+--
+197-                <div className="text-[10px] text-[#848e9c] uppercase mb-1">Stocks Scanned</div>
+198-                <div className="text-xl font-bold font-mono text-white">{progress.scanned}</div>
+199-              </div>
+200-              <div className="bg-[#1e222d] p-3 rounded border border-[#2a2e39] border-l-4 border-l-[#00ff9d]">
+201-                <div className="text-[10px] text-[#848e9c] uppercase mb-1">Buy Candidates</div>
+202:                <div className="text-xl font-bold font-mono text-[#00ff9d]">{results.filter(r => strategy === 'alpha' ? r.passed : (strategy === 'sangam' ? r.sangamPassed : r.reversalPassed)).length}</div>
+203-              </div>
+204-            </div>
+205-          </div>
+206-
+207-          <div>
+--
+223-              <div className="flex items-center justify-between text-xs pb-3 border-b border-[#1e222d] mb-3 mt-3">
+224-                <span className="text-[#b2b5be]">Strategy</span>
+225-                <div className="flex bg-[#1e222d] rounded overflow-hidden shadow-inner">
+226-                  <button 
+227-                    onClick={() => setStrategy('alpha')}
+228:                    className={cn("px-3 py-1 font-mono transition-colors", strategy === 'alpha' ? "bg-[#2962ff] text-white" : "text-[#848e9c] hover:bg-[#2a2e39]")}
+229-                  >Alpha</button>
+230-                  <button 
+231-                    onClick={() => setStrategy('sangam')}
+232:                    className={cn("px-3 py-1 font-mono transition-colors", strategy === 'sangam' ? "bg-[#2962ff] text-white" : "text-[#848e9c] hover:bg-[#2a2e39]")}
+233-                  >Sangam</button>
+234-                </div>
+235-              </div>
+236-              <div className="flex items-center justify-between text-xs">
+237-                <span className="text-[#b2b5be]">
+238:                  {strategy === 'alpha' ? 'EMAs Structure' : 'EMA Tangle (Sangam)'}
+239-                </span>
+240-                <span className="text-[#00ff9d] font-bold">ON</span>
+241-              </div>
+242:              {strategy === 'alpha' && (
+243-                <div className="flex items-center justify-between text-xs">
+244-                  <span className="text-[#b2b5be]">RS (123) &gt; EMA</span>
+245-                  <span className="text-[#00ff9d] font-bold">ON</span>
+246-                </div>
+247-              )}
+--
+334-               </div>
+335-              <div className="flex items-center justify-between mb-2 shrink-0">
+336-                <div className="flex items-center gap-4">
+337-                  <span className="text-sm font-bold text-white uppercase">{selectedStock.name} <span className="text-[10px] text-[#848e9c] font-normal tracking-wide ml-1">{scannerTimeframe === '1W' ? 'Weekly' : 'Daily'}</span></span>
+338-                  <div className="hidden sm:flex gap-3 text-[10px] font-mono">
+339:                    {strategy === 'alpha' ? (
+340-                      <>
+341-                        <span className="text-[#2962ff]">EMA 20: {selectedStock.ema20.toFixed(2)}</span>
+342-                        <span className="text-[#ff9800]">EMA 50: {selectedStock.ema50.toFixed(2)}</span>
+343-                        <span className="text-[#ec4899]">EMA 100: {selectedStock.ema100.toFixed(2)}</span>
+344-                        <span className="text-[#f44336]">EMA 200: {selectedStock.ema200.toFixed(2)}</span>

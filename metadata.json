@@ -1,0 +1,8 @@
+{
+  "name": "Nifty Scanner",
+  "description": "Stock scanner for Indian markets (Nifty 500) using Yahoo Finance data. Complete browser-based calculation of EMAs and Relative Strength.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
