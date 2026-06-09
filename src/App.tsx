@@ -238,8 +238,6 @@ export default function App() {
     const currentMarket = typeof overrideMarket === 'string' ? overrideMarket : market;
     const currentSector = typeof overrideSector === 'string' ? overrideSector : activeSectorToScan;
     
-    console.log("Starting scan, market:", currentMarket, "overrideMarket:", overrideMarket, "market state:", market);
-    
     setScanning(true);
     setErrorMsg('');
     
@@ -1175,7 +1173,7 @@ export default function App() {
       </div>
 
       <button
-        onClick={handleScan}
+        onClick={() => handleScan()}
         disabled={scanning}
         style={{ zIndex: 9999 }}
         className={cn(
@@ -1190,8 +1188,8 @@ export default function App() {
         ) : (
           <Play className="w-4 h-4 md:w-5 md:h-5 shrink-0" fill="currentColor" />
         )}
-        <span className="hidden sm:inline whitespace-nowrap uppercase tracking-wider">{scanning ? `Scanning ${progress.scanned}/${progress.total}` : 'Run Scan'}</span>
-        <span className="sm:hidden whitespace-nowrap uppercase tracking-wider">{scanning ? `${Math.round((progress.scanned/(progress.total||1))*100)}%` : 'Scan'}</span>
+        <span className="hidden sm:inline whitespace-nowrap uppercase tracking-wider">{scanning ? 'Scanning...' : 'Run Scan'}</span>
+        <span className="sm:hidden whitespace-nowrap uppercase tracking-wider">{scanning ? 'Scanning...' : 'Scan'}</span>
       </button>
 
       {/* Footer Status Bar */}
